@@ -90,4 +90,7 @@ else
 	print 3 "Multimon-NG already installed!"
 fi
 
+print 2 "Cleaning up..."
+rm -rf .tmp
+
 print 0 "Installation complete!"

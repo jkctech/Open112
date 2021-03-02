@@ -8,6 +8,21 @@ from termcolor import colored
 
 command = "rtl_fm -f 169.65M -M fm -s 22050 | multimon-ng -q -a FLEX -t raw /dev/stdin"
 
+def resolveCapcode(capcode):
+	database = {
+		"0120901": "Lifeliner 1 (Traumahelikopter Mobiel Medisch Team)",
+		"1420059": "Lifeliner 2 (Traumahelikopter Mobiel Medisch Team)",
+		"0923993": "Lifeliner 3 (Traumahelikopter Mobiel Medisch Team)",
+		"2029568": "Groepscode",
+		"2029569": "Groepscode",
+		"2029570": "Groepscode",
+	}
+
+	if capcode in database:
+		return database[capcode]
+	else:
+		return "Onbekend"
+
 if __name__ == "__main__":
 	try:
 		# Create datastream from demodulator
@@ -19,7 +34,7 @@ if __name__ == "__main__":
 		while True:
 			# If this is None, the process is closed
 			if pipe.poll() != None:
-				print(colored("Could not claim radio.", "red"))
+				print(colored("Radio connection closed unexpectedly.", "red"))
 				exit(3)
 
 			# Read single line and make into string from bytestring
@@ -30,25 +45,19 @@ if __name__ == "__main__":
 				blocks = line.split("|")
 
 				# Check if line is an actual alert
-				if blocks[6] == "ALN":
-					# Make list of capcodes and put in the first one
-					capcodes = [blocks[3]]
+				if blocks[5] == "ALN":
+					# Make list of capcodes
+					capcodes = blocks[4].split(" ")
 					
-					# Only select interesting part: Message (And capcodes if applicable)
-					data = blocks[8:]
+					# Select actual message
+					alert = blocks[6]
 
-					# Final selecting of data
-					if len(data) > 1:
-						# Last element it alert
-						alert = data.pop(-1)
-
-						# Append the rest to capcodes
-						capcodes = capcodes + data
-					else:
-						# If only an alert, save it
-						alert = data[0]
-
+					# Get current timestamp
 					now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
+					# Remove leading 0's in capcodes
+					for i in range(len(capcodes)):
+						capcodes[i] = capcodes[i][3:]
 
 					# Print alert
 					print(colored(now, "yellow"), end=" ")
@@ -57,7 +66,8 @@ if __name__ == "__main__":
 
 					# Print capcodes
 					for code in capcodes:
-						print(colored("\t" + code, "cyan"))
+						print(colored("\t" + code, "cyan"), end=" ")
+						print(resolveCapcode(code))
 			
 			# Only read every second
 			time.sleep(1)

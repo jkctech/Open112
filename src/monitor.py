@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
 					# Remove leading 0's in capcodes
 					for i in range(len(capcodes)):
-						capcodes[i] = capcodes[i][3:]
+						capcodes[i] = capcodes[i][2:]
 
 					# Print alert
 					print(colored(now, "yellow"), end=" ")

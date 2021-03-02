@@ -72,13 +72,14 @@ do
 	fi
 done
 
-# Multimon-NG
+# Download & install specific Multimon-NG version
 if ! command -v multimon-ng &> /dev/null
 then
 	print 2 "Installing Multimon-NG..."
 	cd .tmp
-	git clone https://github.com/EliasOenal/multimonNG.git
-	cd multimonNG
+	wget https://github.com/EliasOenal/multimon-ng/archive/1.1.9.zip
+	unzip 1.1.9.zip
+	cd multimon-ng-1.1.9
 	mkdir build
 	cd build
 	cmake ../

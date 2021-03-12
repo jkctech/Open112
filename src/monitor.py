@@ -1,89 +1,61 @@
-import os
-import subprocess
-import fcntl
 import time
 import datetime
-import argparse
 
 from termcolor import colored
 
 from Atlanet import capinfo
-
-# Version information
-__version__ = "2.0.0"
+from utils import args
+from utils import radio
+from utils import feeder
 
 # Prevent circular import on header
 if __name__ == "__main__":
 	from utils import header
 
-command = "rtl_fm -f 169.65M -M fm -s 22050 | multimon-ng -q -a FLEX -t raw /dev/stdin"
+# Version information
+__version__ = "2.0.0"
 
 if __name__ == "__main__":
 	# Header
 	header.printheader()
 	print()
 
-	# Argparser
-	parser = argparse.ArgumentParser()
+	# Get runtime args
+	args.init()
 
-	parser.add_argument("-f", "--feed", action="store_true", help="Feed your data to 112Centraal. (Requires -k)", default=False)
-	parser.add_argument("-k", "--key", help="Your 112Centraal API key.")
-	parser.add_argument("-nc", "--nocapcodes", action="store_true", help="Don't print capcodes to the screen.")
+	# Debug?
+	if args.argv.debug:
+		print(
+			colored(" ===", "red"),
+			colored("Debugging mode enabled!", "yellow"),
+			colored("===\n", "red")
+		)
 
-	args = parser.parse_args()
-
+	# Encapsulate everything in a try so we can catch everything in 1 place
 	try:
+		# Check feeder
 		print("=" * header.width)
-		# Attempt Feeding
-		if args.feed:
-			# If no key given, error out
-			if args.key == None:
-				raise Exception("Feeding requires an API key.")
-			
-			# Only import when needed
-			from Atlanet import Atlanet
-
-			# Sign on to the 112Centraal Network
-			print(colored("Attempting to connect to 112Centraal:", "cyan"), end=" ")
-			feed = Atlanet(args.key)
-
-			# Invalid key or connection error
-			logon = feed.setStatus("ONLINE")
-			if logon == False:
-				args.feed = False
-				raise Exception("Could not connect to the 112Centraal network.\nPlease check your API key and network connection.")
-			
-			# OK
-			print(colored("[OK]", "green"))
-
-			# Print userdata
-			print("Welcome {}!\nYou are currently registered as {} - {}.".format(
-				colored(logon['result']['name'], "yellow"),
-				colored(logon['result']['description'], "yellow"),
-				colored(logon['result']['plaats'], "yellow")
-			))
-			print(colored("Thank you for being a data feeder!", "green"))
-
-		# Not feeding
-		else:
-			print(colored("You are currently not feeding to 112Centraal.", "red"))
-			print(colored("Please consider becoming a feeder at:", "yellow"), end=" ")
-			print(colored("https://112centraal.nl", "green"))
+		feeder.init()
 		print("=" * header.width)
 
-		# Create datastream from demodulator
-		pipe = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, shell=True)
+		# Start radio
+		print()
+		radio.start()
 
-		# Make subprocess non-blocking
-		fcntl.fcntl(pipe.stdout.fileno(), fcntl.F_SETFL, os.O_NONBLOCK)
+		# Count amount of loops we did not receive anything.
+		# MKOB Den Bosch sends out a ping every 5 minutes, so we can presume
+		# at least SOMETHING should come through every X time.
+		loops = 0
 
 		while True:
-			# If this is None, the process is closed
-			if pipe.poll() != None:
-				raise Exception("Radio connection closed unexpectedly.")
+			# Check poll on device + Loops
+			if radio.pipe.poll() != None or loops > args.argv.timeout:
+				print(colored("Radio seems dead, restarting!", "magenta"))
+				radio.restart()
+				loops = 0
 
 			# Read single line and make into string from bytestring
-			line = pipe.stdout.readline().decode("utf-8").strip()
+			line = radio.pipe.stdout.readline().decode("utf-8").strip()
 
 			# If there's something to read...
 			if len(line) > 0:
@@ -91,14 +63,14 @@ if __name__ == "__main__":
 
 				# Check if line is an actual alert
 				if len(blocks) == 7 and blocks[5] == "ALN":
+					# Reset loops counter
+					loops = 0
+
 					# Make list of capcodes
 					capcodes = blocks[4].split(" ")
 					
 					# Select actual message
 					message = blocks[6]
-
-					# Get current timestamp
-					now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
 					# Remove leading 0's in capcodes
 					for i in range(len(capcodes)):
@@ -107,9 +79,8 @@ if __name__ == "__main__":
 					# Feed data if needed
 					result = False
 					capdata = False
-					if args.feed:
-						result = feed.send(message, capcodes)
-
+					if args.argv.feed:
+						result = feeder.feed.send(message, capcodes)
 						if result != False and "capcodes" in result['data']:
 							capdata = result['data']['capcodes']
 					
@@ -122,6 +93,9 @@ if __name__ == "__main__":
 						else:
 							msgcolor = capinfo.disciplineColor(alert['discipline'])
 
+					# Get current timestamp
+					now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
 					# Print alert
 					print()
 					print(colored(now, "yellow"), end=" ")
@@ -129,7 +103,7 @@ if __name__ == "__main__":
 					print(colored(message, msgcolor))
 
 					# Print capcodes
-					if args.nocapcodes == False:
+					if args.argv.nocapcodes == False:
 						# Print capcodes in feeding mode
 						if capdata != False:
 							# Find longest placename
@@ -169,22 +143,25 @@ if __name__ == "__main__":
 									i = 0
 							if i != 0:
 								print()
+					
+			# Increment loop counter
+			loops += 1
 
 			# Only read every second
-			time.sleep(1)
+			time.sleep(args.argv.loopdelay)
 	
 	# Closed intentionally
 	except KeyboardInterrupt:
 		print(colored("\nClosed by user.", "red"))
-		if args.feed:
-			feed.setStatus("OFFLINE")
+		if args.argv.feed and feeder.feed != None:
+			feeder.feed.setStatus("OFFLINE")
 	
 	# Crashed
 	except Exception as e:
-		if args.feed:
-			feed.setStatus("CRASH")
+		if args.argv.feed and feeder.feed != None:
+			feeder.feed.setStatus("CRASH")
 		print(colored(e, "red"))
 	
 	# Wait for radio to stop
 	finally:
-		time.sleep(3)
+		radio.stop()

@@ -2,6 +2,8 @@ import requests
 import json
 from termcolor import colored
 
+from monitor import __version__
+
 # Set client status on 112Centraal server.
 # ONLINE | OFFLINE | CRASH | UPDATE
 def setStatus(self, status):
@@ -10,7 +12,7 @@ def setStatus(self, status):
 		r = requests.post(self.endpoint + "post/status/", data={
 			'apikey': self.apikey,
 			'status': status,
-			'version': self.version
+			'version': __version__
 		})
 	except Exception as e:
 		print(colored("Could not contact server.", "red"))
@@ -27,9 +29,10 @@ def setStatus(self, status):
 	
 	# Report errors
 	if ('errors' in res):
+		print()
 		for error in res['errors']:
 			print(colored("Error: " + str(res['code']) + " - " + error, "red"))
 		return False
 
 	# Complete
-	return True
+	return res

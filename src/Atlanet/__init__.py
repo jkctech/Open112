@@ -5,4 +5,3 @@ class Atlanet(object):
 	def __init__(self, apikey):
 		self.apikey = apikey
 		self.endpoint = "https://api.112centraal.nl/"
-		self.version = "2.0.0"

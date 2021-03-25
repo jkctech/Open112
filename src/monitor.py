@@ -50,7 +50,7 @@ if __name__ == "__main__":
 		while True:
 			# Check poll on device + Loops
 			if radio.pipe.poll() != None or loops > args.argv.timeout:
-				print(colored("Radio seems dead, restarting!", "magenta"))
+				print(colored("\nRadio seems dead, restarting!", "magenta"))
 				radio.restart()
 				loops = 0
 
@@ -111,6 +111,9 @@ if __name__ == "__main__":
 							for code in capdata:
 								code = capdata[code]
 
+								# String conversions
+								code['plaats'] = str(code['plaats'])
+
 								if code['plaats'] == None:
 									code['plaats'] = "Onbekend"
 
@@ -124,6 +127,11 @@ if __name__ == "__main__":
 
 								if capdata != False and code in capdata:
 									capcode = capdata[code]
+									
+									# String conversions
+									capcode['plaats'] = str(capcode['plaats'])
+									capcode['description'] = str(capcode['description'])
+									
 									discipline = capinfo.disciplineString(capcode['discipline'])
 									print(colored(discipline, capinfo.disciplineColor(capcode['discipline'])) + " " * (16 - len(discipline)), end=" ")
 									print(capcode['plaats'] + " " * (maxlen - len(capcode['plaats'])), end=" ")
@@ -161,6 +169,7 @@ if __name__ == "__main__":
 		if args.argv.feed and feeder.feed != None:
 			feeder.feed.setStatus("CRASH")
 		print(colored(e, "red"))
+		raise Exception from e
 	
 	# Wait for radio to stop
 	finally:

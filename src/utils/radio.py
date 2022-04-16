@@ -6,7 +6,7 @@ import signal
 
 from termcolor import colored
 
-_command = "rtl_fm -f 169.65M -M fm -s 22050 | multimon-ng -q -a FLEX -t raw /dev/stdin"
+_command = "rtl_fm -f 169.65M -M fm -s 22050 | multimon-ng -q -a FLEX -t raw -"
 _restarts = 5
 
 pipe = None

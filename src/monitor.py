@@ -1,27 +1,29 @@
+import os
 import time
 import datetime
 
+os.system('color')
 from termcolor import colored
 
 from Atlanet import capinfo
 from utils import args
-from utils import radio
 from utils import feeder
 
-# Prevent circular import on header
+# Version information
+__version__ = "2.1.0"
+
 if __name__ == "__main__":
 	from utils import header
 
-# Version information
-__version__ = "2.0.0"
-
-if __name__ == "__main__":
 	# Header
 	header.printheader()
 	print()
 
 	# Get runtime args
 	args.init()
+
+	# Import radio only if subprocess
+	from utils import radio
 
 	# Debug?
 	if args.argv.debug:
@@ -48,29 +50,33 @@ if __name__ == "__main__":
 		loops = 0
 
 		while True:
-			# Check poll on device + Loops
-			if radio.pipe.poll() != None or loops > args.argv.timeout:
-				print(colored("\nRadio seems dead, restarting!", "magenta"))
-				radio.restart()
-				loops = 0
-
-			# Read single line and make into string from bytestring
 			line = radio.pipe.stdout.readline().decode("utf-8").strip()
+
+			# # Check poll on device + Loops
+			# if radio.pipe.poll() != None or loops > args.argv.timeout:
+			# 	print(colored("\nRadio seems dead, restarting!", "magenta"))
+			# 	radio.restart()
+			# 	loops = 0
+
+			# # Read single line and make into string from bytestring
+			# line = radio.pipe.stdout.readline().decode("utf-8").strip()
 
 			# If there's something to read...
 			if len(line) > 0:
 				blocks = line.split("|")
 
 				# Check if line is an actual alert
-				if len(blocks) == 7 and blocks[5] == "ALN":
+				if blocks[6] == "ALN":
 					# Reset loops counter
 					loops = 0
 
 					# Make list of capcodes
-					capcodes = blocks[4].split(" ")
+					capcodes = [blocks[3]]
+					if len(blocks) > 9:
+						capcodes += blocks[8:-1]
 					
 					# Select actual message
-					message = blocks[6]
+					message = blocks[-1]
 
 					# Remove leading 0's in capcodes
 					for i in range(len(capcodes)):

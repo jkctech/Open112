@@ -1,8 +1,9 @@
 import subprocess
-import fcntl
+
 import time
 import os
 import signal
+import platform
 
 from termcolor import colored
 
@@ -25,11 +26,12 @@ def start():
 			print(colored("Attempt ", i + 1, "red"))
 			time.sleep(i - (i > 0))
 
+		# Windows working dir
+		if (platform.system() == "Windows"):
+			os.chdir(os.path.dirname(os.path.realpath(__file__)) + "/../windows")
+
 		# Create datastream from demodulator
 		pipe = subprocess.Popen(_command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, shell=True)
-
-		# Make subprocess non-blocking
-		fcntl.fcntl(pipe.stdout.fileno(), fcntl.F_SETFL, os.O_NONBLOCK)
 
 		time.sleep(1)
 
@@ -51,7 +53,10 @@ def stop():
 	global pipe
 
 	if pipe != None:
-		os.kill(pid, signal.SIGKILL)
+		if (platform.system() == "Windows"):
+			subprocess.call(['taskkill', '/F', '/T', '/PID',  str(pid)])
+		else:
+			os.kill(pid, signal.SIGKILL)
 		pipe.kill()
 		pipe = None
 

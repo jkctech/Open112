@@ -22,6 +22,12 @@ ypadd = 2
 width = len(lines[0]) + xpadd * 2 + 2
 
 def printheader():
+	# Clear screen
+	if os.name == "nt":
+		os.system("cls")
+	else:
+		os.system("clear")
+
 	# Print border top
 	print("╔", end="")
 	print("═" * (len(lines[0]) + xpadd * 2), end="")

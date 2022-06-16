@@ -1,67 +1,61 @@
 import subprocess
-
 import time
 import os
 import signal
-import platform
 
-from termcolor import colored
+from utils.Sysinfo import Sysinfo
 
-_command = "rtl_fm -f 169.65M -M fm -s 22050 | multimon-ng -q -a FLEX -t raw -"
-_restarts = 5
+class Radio:
 
-pipe = None
-pid = 0
+	def __init__(self, device=0, gain="automatic", restarts=5):
+		self.pipe = None
+		self.pid = 0
+		self.gain = gain
+		self.device = device
+		self.sysinfo = Sysinfo()
+		self.restarts = restarts
 
-# Attempt to start the radio
-def start():
-	global pipe, pid
+		self.__setCommand()
 
-	print(colored("Starting radio...", "cyan"))
+	# Set correct command depending on OS
+	def __setCommand(self):
+		if "windows" in self.sysinfo.system:
+			self.command = ".\\rtl_fm.exe -f 169.65M -M fm -s 22050 | .\\multimon-ng.exe -q -a FLEX -t raw -"
+		
+		elif "linux" in self.sysinfo.system or "darwin" in self.sysinfo.system:
+			self.command = "rtl_fm -f 169.65M -M fm -s 22050 | multimon-ng -q -a FLEX -t raw -"
+		
+		else:
+			raise Exception("Unknown operating system, cannot prepare radio.")
 
-	# Do 5 attempts to start the radio
-	for i in range(_restarts):
-		# Print attempt
-		if i > 0:
-			print(colored("Attempt ", i + 1, "red"))
-			time.sleep(i - (i > 0))
-
-		# Windows working dir
-		if (platform.system() == "Windows"):
+	def start(self):
+		if "windows" in self.sysinfo.system:
 			os.chdir(os.path.dirname(os.path.realpath(__file__)) + "/../windows")
 
-		# Create datastream from demodulator
-		pipe = subprocess.Popen(_command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, shell=True)
+		for i in range(self.restarts):
+			self.pipe = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, shell=True)
 
-		time.sleep(1)
+			time.sleep(1)
 
-		# If cannot open:
-		if pipe.poll() != None:
-			# Attempt to kill and wait a little (Longer every attemp)
-			stop()
-		else:
-			# rtl_fm pid is shell pid + 1
-			pid = pipe.pid + 1
-			print(colored("Radio active (PID: {})".format(pid), "green"))
-			return True
+			# If cannot open:
+			if self.pipe.poll() != None:
+				# self.stop()
+				pass
 
-	# Could not start
-	raise Exception("Could not start radio after {} attempts.".format(_restarts))
+			else:
+				self.pid = self.pipe.pid
+				return
 
-# Stop the radio if applicable
-def stop():
-	global pipe
+		raise Exception("Could not start radio after {} attempts...".format(self.restarts))
 
-	if pipe != None:
-		if (platform.system() == "Windows"):
-			subprocess.call(['taskkill', '/F', '/T', '/PID',  str(pid)])
-		else:
-			os.kill(pid, signal.SIGKILL)
-		pipe.kill()
-		pipe = None
-
-# Perform a stop and start
-def restart():
-	stop()
-	time.sleep(1)
-	start()
+	def stop(self):
+		if self.pipe != None:
+			try:
+				if "windows" in self.sysinfo.system:
+					subprocess.call(['taskkill', '/F', '/T', '/PID',  str(self.pid)])
+				else:
+					os.kill(self.pid, signal.SIGKILL)
+				self.pipe.kill()
+				self.pipe = None
+			except Exception:
+				pass

@@ -39,8 +39,7 @@ class Radio:
 
 			# If cannot open:
 			if self.pipe.poll() != None:
-				# self.stop()
-				pass
+				self.stop()
 
 			else:
 				self.pid = self.pipe.pid

@@ -5,7 +5,6 @@ import datetime
 os.system('color')
 from colored import fg
 
-from utils import args
 from utils.Radio import Radio
 
 # Version information
@@ -18,11 +17,8 @@ if __name__ == "__main__":
 	header.printheader()
 	print()
 
-	# Get runtime args
-	args.init()
-
 	# Build radio
-	radio = Radio(restarts=args.argv.retries)
+	radio = Radio()
 
 	try:
 		# Start radio

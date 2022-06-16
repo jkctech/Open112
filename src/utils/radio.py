@@ -7,11 +7,11 @@ from utils.Sysinfo import Sysinfo
 
 class Radio:
 
-	def __init__(self, device=0, gain="automatic", restarts=5):
+	def __init__(self, device_id=0, gain="automatic", restarts=5):
 		self.pipe = None
 		self.pid = 0
 		self.gain = gain
-		self.device = device
+		self.device = device_id
 		self.sysinfo = Sysinfo()
 		self.restarts = restarts
 

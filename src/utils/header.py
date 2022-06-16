@@ -1,6 +1,7 @@
 import sys
 import os
-from termcolor import colored
+
+from colored import fg
 
 # Get the version in both standalone and in called mode
 if __name__ == "__main__":
@@ -29,7 +30,7 @@ def printheader():
 		os.system("clear")
 
 	# Print border top
-	print("╔", end="")
+	print(fg('white') + "╔", end="")
 	print("═" * (len(lines[0]) + xpadd * 2), end="")
 	print("╗")
 
@@ -42,7 +43,7 @@ def printheader():
 	# Print header lines
 	for line in lines:
 		print("║" + " " * xpadd, end="")
-		print(colored(line, "magenta"), end="")
+		print(fg('magenta') + line + fg('white'), end="")
 		print(" " * xpadd + "║")
 
 	# Print bottom padding

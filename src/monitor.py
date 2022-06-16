@@ -3,7 +3,7 @@ import time
 import datetime
 
 os.system('color')
-from termcolor import colored
+from colored import fg
 
 from utils import args
 from utils.Radio import Radio
@@ -26,9 +26,9 @@ if __name__ == "__main__":
 
 	try:
 		# Start radio
-		print(colored("Starting radio...", "cyan"))
+		print(fg('cyan') + "Starting radio...")
 		radio.start()
-		print(colored("Radio running!", "green"), colored("(PID: {})".format(radio.pid), "white"))
+		print(fg('green') + "Radio running!", fg('white') + "(PID: {})".format(radio.pid))
 
 		while True:
 			line = radio.pipe.stdout.readline().decode("utf-8").strip()
@@ -56,14 +56,14 @@ if __name__ == "__main__":
 
 					# Print alert
 					print()
-					print(colored(now, "yellow"), end=" ")
-					print(colored("=>", "red"), end=" ")
-					print(colored(message, "white"))
+					print(fg('yellow') + now, end=" ")
+					print(fg('red') + "=>", end=" ")
+					print(fg('white') + message)
 					
 					i = 0
 					print("\t", end="")
 					for code in capcodes:
-						print(colored(code, "cyan"), end=" ")
+						print(fg('cyan') + code, end=" ")
 						i += 1
 						if i == 5:
 							print("\n\t", end="")
@@ -76,9 +76,9 @@ if __name__ == "__main__":
 	
 	# Closed intentionally
 	except KeyboardInterrupt:
-		print(colored("\nClosed by user.", "red"))
+		print(fg('red') + "\nClosed by user.")
 	
 	# Wait for radio to stop
 	finally:
 		radio.stop()
-		pass
+		print(fg('white'))

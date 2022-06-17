@@ -35,6 +35,10 @@ def radioloop():
 		try:
 			while radio.pipe.stdout != None:
 				line = radio.pipe.stdout.readline().decode("utf-8").strip()
+				
+				# If no pipe in line, assume error message...
+				if "|" not in line and "Found" not in line:
+					raise Exception(line)
 
 				# If there's something to read...
 				if len(line) > 0:
@@ -165,15 +169,18 @@ def watcher():
 	global last, radio
 
 	while True:
-		# Check timeout
-		if last + datetime.timedelta(seconds=settings['radio']['timeout']) < datetime.datetime.now():
-			print(fg('yellow') + "\nWARNING: " + fg('white') + "Radio timed out, terminating...")
-			
-			# Kill & reset timer
-			radio.stop()
-			last = datetime.datetime.now()
+		try:
+			# Check timeout
+			if last + datetime.timedelta(seconds=settings['radio']['timeout']) < datetime.datetime.now():
+				print(fg('yellow') + "\nWARNING: " + fg('white') + "Radio timed out, terminating...")
+				
+				# Kill & reset timer
+				radio.stop()
+				last = datetime.datetime.now()
 
-		time.sleep(1)
+			time.sleep(1)
+		except Exception:
+			pass
 
 if __name__ == "__main__":
 	try:
@@ -208,7 +215,7 @@ if __name__ == "__main__":
 			th.start()
 
 		# Keep-alive
-		while True in [t.is_alive() for t in threads]:
+		while False not in [t.is_alive() for t in threads]:
 			time.sleep(0.2)
 
 	# Housekeeping		
@@ -216,4 +223,5 @@ if __name__ == "__main__":
 		print(fg('red') + "\nAborted by user.")
 
 	finally:
+		radio.stop()
 		print(fg('white'))

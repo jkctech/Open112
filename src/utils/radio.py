@@ -31,7 +31,7 @@ class Radio:
 
 	def start(self):
 		for i in range(self.restarts):
-			self.pipe = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, shell=True)
+			self.pipe = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
 
 			time.sleep(1)
 

@@ -1,5 +1,6 @@
 import json
 import requests
+import time
 
 from utils.Sysinfo import Sysinfo
 
@@ -24,7 +25,8 @@ class Feeder:
 			"version": self.version,
 			"release": self.release,
 			"node": self.node,
-			"machine": self.machine
+			"machine": self.machine,
+			"sent": time.time()
 		}
 
 		headers = {

@@ -57,9 +57,6 @@ def radioloop():
 						for i in range(len(capcodes)):
 							capcodes[i] = capcodes[i][2:]
 
-						# Get current timestamp
-						now = datetime.datetime.now()
-
 						# Push to queue
 						if settings['feeding'] == True:
 							try:
@@ -67,7 +64,7 @@ def radioloop():
 									{
 										"message": message,
 										"capcodes": capcodes,
-										"time": now
+										"timestamp": time.time()
 									},
 									block=False
 								)
@@ -76,7 +73,7 @@ def radioloop():
 
 						# Print alert
 						print()
-						print(fg('yellow') + now.strftime("%d-%m-%Y %H:%M:%S"), end=" ")
+						print(fg('yellow') + datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"), end=" ")
 						print(fg('red') + "=>", end=" ")
 						print(fg('white') + message)
 						

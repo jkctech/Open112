@@ -47,11 +47,14 @@ class Radio:
 
 	def stop(self):
 		if self.pipe != None:
-			# Kill the processes(es) [recursively]
-			process = psutil.Process(self.pid)
-			for proc in process.children(recursive=True):
-				proc.kill()
-			process.kill()
+			try:
+				# Kill the processes(es) [recursively]
+				process = psutil.Process(self.pid)
+				for proc in process.children(recursive=True):
+					proc.kill()
+				process.kill()
+			except psutil.NoSuchProcess:
+				pass
 
 			# if "windows" in self.sysinfo.system:
 			# 	subprocess.call(['taskkill', '/F', '/T', '/PID',  str(self.pid)])

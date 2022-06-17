@@ -1,7 +1,6 @@
 import os
 import datetime
 import json
-from subprocess import TimeoutExpired
 import time
 import threading
 import queue as Queue
@@ -62,14 +61,15 @@ def radioloop():
 						now = datetime.datetime.now()
 
 						# Push to queue
-						if settings['feeding'] != True:
+						if settings['feeding'] == True:
 							try:
 								queue.put(
 									{
 										"message": message,
 										"capcodes": capcodes,
 										"time": now
-									}
+									},
+									block=False
 								)
 							except Queue.Full:
 								pass
@@ -86,7 +86,9 @@ def radioloop():
 							print(fg('cyan') + code, end=" ")
 							i += 1
 							if i == 5:
-								print("\n\t", end="")
+								print("\n", end="")
+								if len(capcodes) % 5 != 0:
+									print("\t", end="")
 								i = 0
 						if i != 0:
 							print()
@@ -113,11 +115,16 @@ def radioloop():
 def queuechecker():
 	global queue, settings
 
-	# If not feeding, stop
-	if settings['feeding'] != True:
+	# Start queue & feeder
+	if settings['feeding'] == True:
+		queue = Queue.Queue(maxsize=512)
+	else:
 		return
-
 	feeder = Feeder()
+
+	# Waiting time variable and max time to prevent eternal waits...
+	wtime = 0.2
+	maxtime = 60
 
 	while True:
 		try:
@@ -132,9 +139,18 @@ def queuechecker():
 
 			# If failed, store for later, just in case
 			if result == False:
-				queue.put(alert)
+				queue.put(alert, block=False)
 
-			time.sleep(0.2)
+				time.sleep(wtime)
+
+				# Increase and limit waiting time on failures
+				wtime *= 2
+				if wtime >= maxtime:
+					wtime = maxtime
+			
+			# Make sure we reset waiting time on succeeded feeds
+			else:
+				wtime = 0.2
 
 		# If empty, we are on schedule :)
 		except Queue.Empty:
@@ -143,6 +159,8 @@ def queuechecker():
 		# Max queuesize just in case, if full on re-insert, just do nothing
 		except Queue.Full:
 			pass
+		
+		time.sleep(0.2)
 
 # Watches if radio receives message in x time
 # MKOB Den Bosch sends out a ping every 5 minutes which is very useful
@@ -178,10 +196,6 @@ if __name__ == "__main__":
 			gain=settings['radio']['gain']
 		)
 
-		# Start queue
-		if settings['feeding'] != True:
-			queue = Queue.Queue(maxsize=512)
-
 		# Function we want to thread
 		targets = [
 			radioloop,
@@ -198,7 +212,7 @@ if __name__ == "__main__":
 
 		# Keep-alive
 		while True in [t.is_alive() for t in threads]:
-			time.sleep(0.1)
+			time.sleep(0.2)
 
 	# Housekeeping		
 	except KeyboardInterrupt:

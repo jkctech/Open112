@@ -15,7 +15,7 @@ class Feeder:
 		self.release = sys.release
 		self.node = sys.node
 		self.machine = sys.machine
-	
+
 	def feed(self, msgobject):
 		data = {
 			"message": msgobject,
@@ -40,6 +40,6 @@ class Feeder:
 			)
 
 			return r
-		
+
 		except Exception:
 			return False

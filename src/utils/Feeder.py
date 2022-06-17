@@ -3,6 +3,8 @@ import requests
 import time
 
 from utils.Sysinfo import Sysinfo
+from os import path
+from colored import fg
 
 class Feeder:
 	ENDPOINT = "https://api.112centraal.nl/v2/"
@@ -16,6 +18,8 @@ class Feeder:
 		self.release = sys.release
 		self.node = sys.node
 		self.machine = sys.machine
+
+		self.__infofile()
 
 	def feed(self, msgobject):
 		data = {
@@ -45,3 +49,17 @@ class Feeder:
 
 		except Exception:
 			return False
+	
+	def __infotext(self):
+		text = ""
+		text += "UUID: " + self.uuid + "\n"
+		text += "Statistics URL: " + self.ENDPOINT + "stats/" + self.uuid + "\n"
+		return text
+	
+	def __infofile(self):
+		if path.exists("feeder_info.txt") == False:
+			try:
+				with open("feeder_info.txt", "w") as f:
+					f.write(self.__infotext())
+			except Exception as e:
+				print(fg('yellow') + "WARNING: " + fg('white') + "Could not create feeder_info.txt!")

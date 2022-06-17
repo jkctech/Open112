@@ -115,9 +115,9 @@ def queuechecker():
 	# Start queue & feeder
 	if settings['feeding'] == True:
 		queue = Queue.Queue(maxsize=512)
+		feeder = Feeder()
 	else:
 		return
-	feeder = Feeder()
 
 	# Waiting time variable and max time to prevent eternal waits...
 	wtime = 0.2

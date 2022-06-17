@@ -21,7 +21,7 @@ class Radio:
 	# Set correct command depending on OS
 	def __setCommand(self):
 		if "windows" in self.sysinfo.system:
-			self.command = ".\\rtl_fm.exe -f 169.65M -M fm -s 22050 -d {} -g {} | .\\multimon-ng.exe -q -a FLEX -t raw -".format(self.device, self.gain)
+			self.command = ".\\windows\\rtl_fm.exe -f 169.65M -M fm -s 22050 -d {} -g {} | .\\windows\\multimon-ng.exe -q -a FLEX -t raw -".format(self.device, self.gain)
 		
 		elif "linux" in self.sysinfo.system or "darwin" in self.sysinfo.system:
 			self.command = "rtl_fm -f 169.65M -M fm -s 22050 -d {} -g {} | multimon-ng -q -a FLEX -t raw -".format(self.device, self.gain)
@@ -30,9 +30,6 @@ class Radio:
 			raise Exception("Unknown operating system, cannot prepare radio.")
 
 	def start(self):
-		if "windows" in self.sysinfo.system:
-			os.chdir(os.path.dirname(os.path.realpath(__file__)) + "/../windows")
-
 		for i in range(self.restarts):
 			self.pipe = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, shell=True)
 

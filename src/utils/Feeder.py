@@ -35,7 +35,8 @@ class Feeder:
 			r = requests.post(
 				self.ENDPOINT,
 				data=json.dumps(data),
-				headers=headers
+				headers=headers,
+				timeout=10
 			)
 
 			return r

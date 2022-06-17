@@ -1,6 +1,7 @@
 import subprocess
 import time
 import os
+import psutil
 import signal
 
 from utils.Sysinfo import Sysinfo
@@ -20,10 +21,10 @@ class Radio:
 	# Set correct command depending on OS
 	def __setCommand(self):
 		if "windows" in self.sysinfo.system:
-			self.command = ".\\rtl_fm.exe -f 169.65M -M fm -s 22050 | .\\multimon-ng.exe -q -a FLEX -t raw -"
+			self.command = ".\\rtl_fm.exe -f 169.65M -M fm -s 22050 -d {} -g {} | .\\multimon-ng.exe -q -a FLEX -t raw -".format(self.device, self.gain)
 		
 		elif "linux" in self.sysinfo.system or "darwin" in self.sysinfo.system:
-			self.command = "rtl_fm -f 169.65M -M fm -s 22050 | multimon-ng -q -a FLEX -t raw -"
+			self.command = "rtl_fm -f 169.65M -M fm -s 22050 -d {} -g {} | multimon-ng -q -a FLEX -t raw -".format(self.device, self.gain)
 		
 		else:
 			raise Exception("Unknown operating system, cannot prepare radio.")
@@ -49,12 +50,15 @@ class Radio:
 
 	def stop(self):
 		if self.pipe != None:
-			try:
-				if "windows" in self.sysinfo.system:
-					subprocess.call(['taskkill', '/F', '/T', '/PID',  str(self.pid)])
-				else:
-					os.kill(self.pid, signal.SIGKILL)
-				self.pipe.kill()
-				self.pipe = None
-			except Exception:
-				pass
+			# Kill the processes(es) [recursively]
+			process = psutil.Process(self.pid)
+			for proc in process.children(recursive=True):
+				proc.kill()
+			process.kill()
+
+			# if "windows" in self.sysinfo.system:
+			# 	subprocess.call(['taskkill', '/F', '/T', '/PID',  str(self.pid)])
+			# else:
+			# 	os.kill(self.pid, signal.SIGKILL)
+			self.pipe = None
+			self.pid = 0

@@ -3,6 +3,7 @@
 	"auto_updates": true,
 	"radio": {
 		"device_id": 0,
-		"gain": "automatic"
+		"gain": "automatic",
+		"timeout": 400
 	}
 }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<title>{{TITLE}}</title>
+	<meta name='viewport' content='width=device-width, initial-scale=1'>
+	<!-- Favicon -->
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	<!-- Style and software -->
+	<link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+	<script src='main.js'></script>
+	<!-- Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+	<!-- Navbar -->
+	<nav class="menu-container">
+		<!-- burger menu -->
+		<input type="checkbox" aria-label="Toggle menu">
+		<span></span>
+		<span></span>
+		<span></span>
+		<!-- logo -->
+		<a href="/" class="menu-logo">
+			<img src="/logo_wide_transparent.png" alt="Open112">
+		</a>
+		<!-- menu items -->
+		<div class="menu">
+			<ul></ul>
+			<ul>
+				<li><a href="/">Monitor</a></li>
+				<li><a href="/stats">Statistics</a></li>
+			</ul>
+		</div>
+	</nav>
+	
+	<!-- Main content -->
+	<main>
+		{{MAIN}}
+	</main>
+
+	<footer>
+		<p>&copy; Open112 <script>document.write(/\d{4}/.exec(Date())[0])</script></p>
+		<p><a href="https://jkctech.nl" target="_blank">Jeffrey Koopman</a> - <a href="https://112centraal.nl" target="_blank">112Centraal</a></p>
+	</footer>
+</body>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1TF4NCRKP8"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-1TF4NCRKP8');
+</script>
+</html>

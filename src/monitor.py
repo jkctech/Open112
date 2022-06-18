@@ -12,6 +12,7 @@ from shutil import copyfile
 from utils import header
 from utils.Feeder import Feeder
 from utils.Radio import Radio
+from utils.DisplayServer import DisplayServer
 
 os.system('color')
 from colored import fg
@@ -20,6 +21,7 @@ from colored import fg
 settings = None
 queue = None
 radio = None
+messages = []
 last = datetime.datetime.now()
 
 def radioloop():
@@ -61,6 +63,19 @@ def radioloop():
 						for i in range(len(capcodes)):
 							capcodes[i] = capcodes[i][2:]
 
+						now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
+						# Push to webserver and keep list limited
+						if settings['webserver']['enabled'] == True:
+							messages.append({
+								"message": message,
+								"capcodes": capcodes,
+								"time": now
+							})
+
+							if len(messages) > settings['webserver']['messages']:
+								messages.pop(0)
+
 						# Push to queue
 						if settings['feeding'] == True:
 							try:
@@ -77,7 +92,7 @@ def radioloop():
 
 						# Print alert
 						print()
-						print(fg('yellow') + datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"), end=" ")
+						print(fg('yellow') + now, end=" ")
 						print(fg('red') + "=>", end=" ")
 						print(fg('white') + message)
 						
@@ -182,6 +197,18 @@ def watcher():
 		except Exception:
 			pass
 
+def msglist():
+	global messages
+	return messages
+
+# Webserver
+def displayserver():
+	global settings
+
+	if settings['webserver']['enabled'] == True:
+		server = DisplayServer(settings['webserver']['hostname'], settings['webserver']['port'], "web", msglist)
+		server.serve_forever()
+
 if __name__ == "__main__":
 	try:
 		# Header
@@ -204,7 +231,8 @@ if __name__ == "__main__":
 		targets = [
 			radioloop,
 			queuechecker,
-			watcher
+			watcher,
+			displayserver
 		]
 
 		# Create all threads and start

@@ -1,9 +1,14 @@
 {
 	"feeding": true,
-	"auto_updates": true,
 	"radio": {
 		"device_id": 0,
 		"gain": "automatic",
 		"timeout": 400
+	},
+	"webserver": {
+		"enabled": true,
+		"hostname": "localhost",
+		"port": 8112,
+		"messages": 250
 	}
 }

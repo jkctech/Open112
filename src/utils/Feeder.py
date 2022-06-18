@@ -6,6 +6,8 @@ from utils.Sysinfo import Sysinfo
 from os import path
 from colored import fg
 
+from monitor import __version__
+
 class Feeder:
 	ENDPOINT = "https://api.112centraal.nl/v2/"
 
@@ -30,7 +32,8 @@ class Feeder:
 			"release": self.release,
 			"node": self.node,
 			"machine": self.machine,
-			"sent": time.time()
+			"sent": time.time(),
+			"version": __version__
 		}
 
 		headers = {

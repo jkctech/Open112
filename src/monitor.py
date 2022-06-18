@@ -5,6 +5,9 @@ import time
 import threading
 import queue as Queue
 
+# Version information
+__version__ = "2.3.0"
+
 from shutil import copyfile
 from utils import header
 from utils.Feeder import Feeder
@@ -12,9 +15,6 @@ from utils.Radio import Radio
 
 os.system('color')
 from colored import fg
-
-# Version information
-__version__ = "2.3.0"
 
 # Variables
 settings = None

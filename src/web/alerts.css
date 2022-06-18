@@ -1,0 +1,44 @@
+.alert {
+	margin: 15px 0;
+	width: 100%;
+}
+
+.alert p {
+	margin: 0;
+}
+
+.alert table {
+	border: none;
+	width: 100%;
+}
+
+td {
+	padding: none;
+	overflow-wrap: break-word;
+}
+
+.date {
+	color: #dda50b;
+	white-space: nowrap;
+}
+
+.time {
+	color: #1aa51a;
+}
+
+.arrow {
+	color: #c9240f;
+}
+
+.message {
+	color: #ffffff;
+	width: 100%;
+}
+
+.capcodes {
+	color: #217cb1;
+}
+
+#examplealert {
+	display: none;
+}

@@ -4,10 +4,7 @@ Open112 is open source <a href="https://nl.wikipedia.org/wiki/P2000_(netwerk)" t
 
 This software doubles as feeder software for <a href="https://112centraal.nl" target="_blank">112Centraal</a>.
 
-<img src="assets/screenshots/browser.png">
-
-<img src="assets/screenshots/mobile.png" width="35%">
-<img src="assets/screenshots/terminal.png" width="64%">
+<img src="assets/screenshots/browser.png" width="50%"> <img src="assets/screenshots/mobile.png" width="19%"> <img src="assets/screenshots/terminal.png" width="30%">
 
 ## Installation
 

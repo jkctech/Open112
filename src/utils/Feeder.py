@@ -60,9 +60,10 @@ class Feeder:
 		return text
 	
 	def __infofile(self):
-		if path.exists("feeder_info.txt") == False:
+		fp = "../feeder_info.txt"
+		if path.exists(fp) == False:
 			try:
-				with open("feeder_info.txt", "w") as f:
+				with open(fp, "w") as f:
 					f.write(self.__infotext())
 			except Exception as e:
-				print(fg('yellow') + "WARNING: " + fg('white') + "Could not create feeder_info.txt!")
+				print(fg('yellow') + "WARNING: " + fg('white') + "Could not create {}!".format(fp))

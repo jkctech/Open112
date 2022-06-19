@@ -16,57 +16,66 @@
 	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-	<!-- Navbar -->
-	<nav class="menu-container">
-		<!-- burger menu -->
-		<input type="checkbox" aria-label="Toggle menu">
-		<span></span>
-		<span></span>
-		<span></span>
-		<!-- logo -->
-		<a href="/" class="menu-logo">
-			<img src="/logo_wide_transparent.png" alt="Open112">
-		</a>
-		<!-- menu items -->
-		<div class="menu">
-			<ul></ul>
-			<ul>
-				<li><a href="/">Monitor</a></li>
-				<li><a href="/stats">Statistieken</a></li>
-			</ul>
-		</div>
-	</nav>
-	
-	<!-- Base alert -->
-	<div class="alert" id="examplealert">
-		<table>
-			<tr>
-				<td class="date">DATE</td>
-				<td class="time">TIME</td>
-				<td class="arrow">=></td>
-				<td class="message">MESSAGE</td>
-			</tr>
-			<tr>
-				<td></td><td></td><td></td>
-				<td class="capcodes">CAPCODES</td>
-			</tr>
-		</table>
-	</div>
-
 	<!-- Main content -->
 	<main>
-		<div id="loader" class="loading">
-			<h2>Laden...</h2>
-			<div class="lds-dual-ring"></div>
-		</div>
-		<div id="alertwrapper"></div>
-	</main>
+		<!-- Content -->
+		<div class="contentbox">
+			<!-- Navbar -->
+			<nav class="menu-container">
+				<!-- burger menu -->
+				<input type="checkbox" aria-label="Toggle menu">
+				<span></span>
+				<span></span>
+				<span></span>
+				<!-- logo -->
+				<a href="/" class="menu-logo">
+					<img src="/logo_wide_transparent.png" alt="Open112">
+				</a>
+				<!-- menu items -->
+				<div class="menu">
+					<ul></ul>
+					<ul>
+						<li><a href="/">Monitor</a></li>
+						<li><a href="/stats">Statistieken</a></li>
+						<li><a href="https://github.com/jkctech/Open112" target="_blank">Github</a></li>
+					</ul>
+				</div>
+			</nav>
 
-	<footer>
-		<p>&copy; Open112 <script>document.write(/\d{4}/.exec(Date())[0])</script></p>
-		<p><a href="https://jkctech.nl" target="_blank">Jeffrey Koopman</a> - <a href="https://112centraal.nl" target="_blank">112Centraal</a></p>
-	</footer>
+			<!-- Loader -->
+			<div id="loader" class="loading">
+				<h2>Laden...</h2>
+				<div class="lds-dual-ring"></div>
+			</div>
+
+			<!-- Alerts -->
+			<div id="alertwrapper"></div>
+
+			<!-- Footer -->
+			<footer>
+				<p>&copy; Open112</p>
+				<p><a href="https://jkctech.nl" target="_blank">Jeffrey Koopman</a> - <a href="https://112centraal.nl" target="_blank">112Centraal</a></p>
+			</footer>
+		</div>
+	</main>
 </body>
+
+<!-- Base alert -->
+<div class="alert" id="examplealert">
+	<table>
+		<tr>
+			<td class="date">DATE</td>
+			<td class="time">TIME</td>
+			<td class="arrow">=></td>
+			<td class="message">MESSAGE</td>
+		</tr>
+		<tr>
+			<td></td><td></td><td></td>
+			<td class="capcodes">CAPCODES</td>
+		</tr>
+	</table>
+</div>
+
 <!-- Alerts -->
 <script src='alerts.js'></script>
 <!-- Google Analytics -->

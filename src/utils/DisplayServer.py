@@ -15,7 +15,7 @@ def RequestHandlerFactory(webroot, msglist):
 			files = self.getfiles()
 
 			# Unify directory delimiters
-			path = self.path.replace('/', '\\')
+			path = self.path.replace('/', '\\').split('?')[0]
 
 			# Special cases
 			if path == "\\messages":

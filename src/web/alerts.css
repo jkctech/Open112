@@ -15,6 +15,7 @@
 td {
 	padding: none;
 	overflow-wrap: break-word;
+	vertical-align: top;
 }
 
 .date {

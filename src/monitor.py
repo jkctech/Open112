@@ -70,7 +70,8 @@ def radioloop():
 							messages.append({
 								"message": message,
 								"capcodes": capcodes,
-								"time": now
+								"time": now,
+								"timestamp": time.time()
 							})
 
 							if len(messages) > settings['webserver']['messages']:

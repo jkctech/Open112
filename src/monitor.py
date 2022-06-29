@@ -219,7 +219,7 @@ def displayserver():
 if __name__ == "__main__":
 	try:
 		# Header
-		header.printheader()
+		header.printheader(__version__)
 		print()
 
 		# Parse settings

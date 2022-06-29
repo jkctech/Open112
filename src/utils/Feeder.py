@@ -12,7 +12,7 @@ class Feeder:
 	def __init__(self, version):
 		sys = Sysinfo()
 
-		self.uuid = sys.getUUID().decode("utf-8").strip()
+		self.uuid = sys.getUUID()
 		self.version = version
 
 		self.__infofile()

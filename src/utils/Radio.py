@@ -20,10 +20,10 @@ class Radio:
 	def __setCommand(self):
 		if "windows" in self.sysinfo.system:
 			self.command = ".\\windows\\rtl_fm.exe -f 169.65M -M fm -s 22050 -d {} -g {} | .\\windows\\multimon-ng.exe -q -a FLEX -t raw -".format(self.device, self.gain)
-		
+
 		elif "linux" in self.sysinfo.system or "darwin" in self.sysinfo.system:
 			self.command = "rtl_fm -f 169.65M -M fm -s 22050 -d {} -g {} | multimon-ng -q -a FLEX -t raw -".format(self.device, self.gain)
-		
+
 		else:
 			raise Exception("Unknown operating system, cannot prepare radio.")
 
@@ -38,6 +38,9 @@ class Radio:
 
 	@classmethod
 	def __split_1_1_8(cls, blocks):
+		if len(blocks) < 9:
+			return False
+
 		capcodes = [blocks[3]]
 		if len(blocks) > 9:
 			capcodes += blocks[8:-1]
@@ -50,6 +53,8 @@ class Radio:
 
 	@classmethod
 	def __split_1_1_9(cls, blocks):
+		if len(blocks) < 7:
+			return False
 		return {
 			"aln": blocks[5],
 			"message": blocks[6],

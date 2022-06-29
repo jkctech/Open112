@@ -37,9 +37,16 @@ def radioloop():
 		try:
 			while radio.pipe.stdout != None:
 				line = radio.pipe.stdout.readline().decode("utf-8").strip()
-				
-				# If no pipe in line, assume error message...
-				if "|" not in line and "Found" not in line:
+
+				# Skip default messages from rtl_fm
+				if line.startswith("Found"):
+					line = radio.pipe.stdout.readline().decode("utf-8").strip()
+					while line.startswith("Output at") == False:
+						line = radio.pipe.stdout.readline().decode("utf-8").strip()
+					continue
+
+				# Non-flex usually means error
+				if line.startswith("FLEX") == False:
 					raise Exception(line)
 
 				# If there's something to read...
@@ -47,7 +54,7 @@ def radioloop():
 					data = Radio.splitblocks(settings['radio']['multimon-version'], line)
 
 					# Check if line is an actual alert
-					if data['aln'] == "ALN":
+					if data != False and data['aln'] == "ALN":
 						# Reset last
 						last = datetime.datetime.now()
 
@@ -58,7 +65,7 @@ def radioloop():
 						# Make capcodes into 7-digit numbers
 						for i in range(len(capcodes)):
 							capcodes[i] = capcodes[i][-7:]
-						
+
 						# Detect group issues on older Multimon versions
 						# https://github.com/EliasOenal/multimon-ng/issues/168
 						a = int(capcodes[0])
@@ -99,7 +106,7 @@ def radioloop():
 						print(fg('yellow') + now, end=" ")
 						print(fg('red') + "=>", end=" ")
 						print(fg('white') + message)
-						
+
 						i = 0
 						print("\t", end="")
 						for code in capcodes:
@@ -114,7 +121,7 @@ def radioloop():
 
 						if missgroup:
 							print(fg('red'), "\bBroken groupmessage detected >> https://github.com/EliasOenal/multimon-ng/issues/168")
-						
+
 						print(fg('white'), end="")
 
 				# Delay for stability
@@ -127,11 +134,12 @@ def radioloop():
 		# Report other errors...
 		except Exception as e:
 			print(fg('red') + "ERROR: " + fg('white') + str(e))
+			raise Exception() from e
 
 		# Housekeeping
 		finally:
 			print(fg('white'))
-		
+
 		print(fg('yellow') + "Radio has terminated..." + fg('white'))
 		print()
 
@@ -170,7 +178,7 @@ def queuechecker():
 				wtime *= 2
 				if wtime >= maxtime:
 					wtime = maxtime
-			
+
 			# Make sure we reset waiting time on succeeded feeds
 			else:
 				wtime = 0.2
@@ -182,7 +190,7 @@ def queuechecker():
 		# Max queuesize just in case, if full on re-insert, just do nothing
 		except Queue.Full:
 			pass
-		
+
 		time.sleep(0.2)
 
 # Watches if radio receives message in x time
@@ -195,7 +203,7 @@ def watcher():
 			# Check timeout
 			if last + datetime.timedelta(seconds=settings['radio']['timeout']) < datetime.datetime.now():
 				print(fg('yellow') + "\nWARNING: " + fg('white') + "Radio timed out, terminating...")
-				
+
 				# Kill & reset timer
 				radio.stop()
 				last = datetime.datetime.now()
@@ -253,7 +261,7 @@ if __name__ == "__main__":
 		while False not in [t.is_alive() for t in threads]:
 			time.sleep(0.2)
 
-	# Housekeeping		
+	# Housekeeping
 	except KeyboardInterrupt:
 		print(fg('red') + "\nAborted by user.")
 

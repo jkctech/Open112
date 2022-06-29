@@ -12,7 +12,7 @@ class Feeder:
 	def __init__(self, version):
 		sys = Sysinfo()
 
-		self.uuid = sys.getUUID()
+		self.uuid = sys.getUUID().decode("utf-8").strip()
 		self.version = version
 
 		self.__infofile()
@@ -41,13 +41,13 @@ class Feeder:
 
 		except Exception:
 			return False
-	
+
 	def __infotext(self):
 		text = ""
 		text += "UUID: " + self.uuid + "\n"
 		text += "Statistics URL: " + self.ENDPOINT + "stats/" + self.uuid + "\n"
 		return text
-	
+
 	def __infofile(self):
 		fp = "../feeder_info.txt"
 		if path.exists(fp) == False:

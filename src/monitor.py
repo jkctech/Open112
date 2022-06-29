@@ -136,12 +136,12 @@ def radioloop():
 		print()
 
 def queuechecker():
-	global queue, settings
+	global queue, settings, __version__
 
 	# Start queue & feeder
 	if settings['feeding'] == True:
 		queue = Queue.Queue(maxsize=512)
-		feeder = Feeder()
+		feeder = Feeder(__version__)
 	else:
 		return
 

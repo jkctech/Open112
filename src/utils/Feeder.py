@@ -6,20 +6,14 @@ from utils.Sysinfo import Sysinfo
 from os import path
 from colored import fg
 
-from monitor import __version__
-
 class Feeder:
 	ENDPOINT = "http://localhost/api/v2/"
 
-	def __init__(self):
+	def __init__(self, version):
 		sys = Sysinfo()
 
 		self.uuid = sys.getUUID()
-		self.system = sys.system
-		self.version = sys.version
-		self.release = sys.release
-		self.node = sys.node
-		self.machine = sys.machine
+		self.version = version
 
 		self.__infofile()
 
@@ -28,7 +22,7 @@ class Feeder:
 			"message": msgobject,
 			"uuid": self.uuid,
 			"sent": time.time(),
-			"version": __version__
+			"version": self.version
 		}
 
 		headers = {

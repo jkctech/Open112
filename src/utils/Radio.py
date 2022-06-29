@@ -1,8 +1,6 @@
 import subprocess
 import time
-import os
 import psutil
-import signal
 
 from utils.Sysinfo import Sysinfo
 

@@ -56,3 +56,4 @@ class Feeder:
 					f.write(self.__infotext())
 			except Exception as e:
 				print(fg('yellow') + "WARNING: " + fg('white') + "Could not create {}!".format(fp))
+				print(e)

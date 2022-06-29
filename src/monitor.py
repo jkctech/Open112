@@ -44,24 +44,27 @@ def radioloop():
 
 				# If there's something to read...
 				if len(line) > 0:
-					blocks = line.split("|")
+					data = Radio.splitblocks(settings['radio']['multimon-version'], line)
 
 					# Check if line is an actual alert
-					if blocks[6] == "ALN":
+					if data['aln'] == "ALN":
 						# Reset last
 						last = datetime.datetime.now()
 
 						# Make list of capcodes
-						capcodes = [blocks[3]]
-						if len(blocks) > 9:
-							capcodes += blocks[8:-1]
-						
-						# Select actual message
-						message = blocks[-1]
+						message = data['message']
+						capcodes = data['capcodes']
 
-						# Remove leading 0's in capcodes
+						# Make capcodes into 7-digit numbers
 						for i in range(len(capcodes)):
-							capcodes[i] = capcodes[i][2:]
+							capcodes[i] = capcodes[i][-7:]
+						
+						# Detect group issues on older Multimon versions
+						# https://github.com/EliasOenal/multimon-ng/issues/168
+						a = int(capcodes[0])
+						missgroup = False
+						if a >= 2029568 and a <= 20295783 and len(capcodes) == 1:
+							missgroup = True
 
 						now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
@@ -78,7 +81,7 @@ def radioloop():
 								messages.pop(0)
 
 						# Push to queue
-						if settings['feeding'] == True:
+						if settings['feeding'] == True and missgroup == False:
 							try:
 								queue.put(
 									{
@@ -107,8 +110,11 @@ def radioloop():
 								if len(capcodes) % 5 != 0:
 									print("\t", end="")
 								i = 0
-						if i != 0:
-							print()
+						print()
+
+						if missgroup:
+							print(fg('red'), "\bBroken groupmessage detected >> https://github.com/EliasOenal/multimon-ng/issues/168")
+						
 						print(fg('white'), end="")
 
 				# Delay for stability
@@ -150,6 +156,11 @@ def queuechecker():
 
 			# Attempt to feed and save result
 			result = feeder.feed(alert)
+
+			try:
+				print(result.text)
+			except Exception:
+				print('fail')
 
 			# Mark as done anyway
 			queue.task_done()

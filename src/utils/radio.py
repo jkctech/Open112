@@ -29,6 +29,35 @@ class Radio:
 		else:
 			raise Exception("Unknown operating system, cannot prepare radio.")
 
+	@classmethod
+	def splitblocks(cls, version, line):
+		blocks = line.split("|")
+
+		if version == "1.1.8":
+			return cls.__split_1_1_8(blocks)
+		elif version == "1.1.9":
+			return cls.__split_1_1_9(blocks)
+
+	@classmethod
+	def __split_1_1_8(cls, blocks):
+		capcodes = [blocks[3]]
+		if len(blocks) > 9:
+			capcodes += blocks[8:-1]
+
+		return {
+			"aln": blocks[6],
+			"message": blocks[-1],
+			"capcodes": capcodes,
+		}
+
+	@classmethod
+	def __split_1_1_9(cls, blocks):
+		return {
+			"aln": blocks[5],
+			"message": blocks[6],
+			"capcodes": blocks[4].split(' '),
+		}
+
 	def start(self):
 		for i in range(self.restarts):
 			self.pipe = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)

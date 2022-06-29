@@ -9,7 +9,7 @@ from colored import fg
 from monitor import __version__
 
 class Feeder:
-	ENDPOINT = "https://api.112centraal.nl/v2/"
+	ENDPOINT = "http://localhost/api/v2/"
 
 	def __init__(self):
 		sys = Sysinfo()
@@ -27,22 +27,17 @@ class Feeder:
 		data = {
 			"message": msgobject,
 			"uuid": self.uuid,
-			"system ": self.system,
-			"version": self.version,
-			"release": self.release,
-			"node": self.node,
-			"machine": self.machine,
 			"sent": time.time(),
 			"version": __version__
 		}
 
 		headers = {
-			'content-type': 'application/json'
+			'Content-type': 'application/json'
 		}
 
 		try:
 			r = requests.post(
-				self.ENDPOINT,
+				self.ENDPOINT + "insert",
 				data=json.dumps(data),
 				headers=headers,
 				timeout=10

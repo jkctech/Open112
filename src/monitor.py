@@ -157,11 +157,6 @@ def queuechecker():
 			# Attempt to feed and save result
 			result = feeder.feed(alert)
 
-			try:
-				print(result.text)
-			except Exception:
-				print('fail')
-
 			# Mark as done anyway
 			queue.task_done()
 

@@ -1,0 +1,13 @@
+[Unit]
+Description=Open112 P2000 Receiver
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/Software/Open112/src
+ExecStart=/home/pi/Software/Open112/venv/bin/python monitor.py
+Restart=on-failure
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target

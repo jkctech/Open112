@@ -6,6 +6,8 @@ import time
 import threading
 import queue as Queue
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 # Version information
 __version__ = "2.3.0"
 

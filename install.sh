@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]
+	then echo "Please run as root: sudo" $0
+	exit
+fi
+
 # Install requirements
 apt-get update
 apt-get install -y \

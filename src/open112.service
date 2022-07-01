@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/pi/Software/Open112/src
-ExecStart=/home/pi/Software/Open112/venv/bin/python monitor.py
+WorkingDirectory={PWD}/src
+ExecStart={PWD}/venv/bin/python monitor.py
 Restart=on-failure
 KillMode=mixed
 

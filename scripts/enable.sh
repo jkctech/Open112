@@ -5,6 +5,8 @@ if [ "$EUID" -ne 0 ]
 	exit
 fi
 
+cd ..
+
 cp src/open112.service /etc/systemd/system/open112.service
 sed -i 's@{PWD}@'"$PWD"'@' /etc/systemd/system/open112.service
 systemctl daemon-reload

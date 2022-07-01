@@ -5,10 +5,10 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 def RequestHandlerFactory(webroot, msglist):
 	class RequestHandler(BaseHTTPRequestHandler):
-		
+
 		rewrites = {
-			"\\": "\\index.html",
-			"\\stats": "\\stats.html"
+			"/": "/index.html",
+			"/stats": "/stats.html"
 		}
 
 		def do_GET(self):
@@ -16,10 +16,10 @@ def RequestHandlerFactory(webroot, msglist):
 				files = self.getfiles()
 
 				# Unify directory delimiters
-				path = self.path.replace('/', '\\').split('?')[0]
+				path = self.path.replace('\\', '/').split('?')[0]
 
 				# Special cases
-				if path == "\\messages":
+				if path == "/messages":
 					self.messages()
 					return
 
@@ -43,10 +43,10 @@ def RequestHandlerFactory(webroot, msglist):
 				else:
 					self.send_response(404)
 					self.end_headers()
-					
-					with open(webroot + "\\404.html", "rb") as f:
+
+					with open(webroot + "/404.html", "rb") as f:
 						self.wfile.write(f.read())
-			
+
 			except ConnectionAbortedError:
 				pass
 

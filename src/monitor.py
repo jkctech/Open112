@@ -1,4 +1,5 @@
 import os
+import sys
 import datetime
 import json
 import time
@@ -231,10 +232,17 @@ if __name__ == "__main__":
 		header.printheader(__version__)
 		print()
 
-		# Parse settings
+		# Make copy of default config
 		if not os.path.exists("config.json"):
 			copyfile("config_default.json", "config.json")
-		with open("config.json", "r") as f:
+
+		# Select settings file
+		sfile = "config.json"
+		if len(sys.argv) >= 2:
+			sfile = sys.argv[1]
+
+		# Parse settings
+		with open(sfile, "r") as f:
 			settings = json.load(f)
 
 		# Build radio

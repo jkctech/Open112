@@ -6,12 +6,25 @@ This software doubles as feeder software for <a href="https://112centraal.nl" ta
 
 <img src="assets/screenshots/browser.png" width="50%"> <img src="assets/screenshots/mobile.png" width="19%"> <img src="assets/screenshots/terminal.png" width="30%">
 
+## Prerequisites
+
+ - A device / server to run on with at least 1 free USB port (Windows / Linux)
+	- A Raspberry Pi is perfect for this purpose!
+ - Some form of compatible RTL-SDR dongle
+ - Basic terminal and config editing skills
+
 ## Installation
 
-Please refer to one of the following manuals:
+Clone this repository to your device:
+```bash
+git clone https://github.com/jkctech/Open112
+```
+*(This way, you can update your feeder by running `git pull`)*
 
-#### > <a href="install_linux.md">Linux Installation</a>
-#### > <a href="install_windows.md">Windows Installation</a>
+**Now please refer to one of the following installation manuals:**
+
+#### > <a href="/docs/install_linux.md">Linux Installation</a>
+#### > <a href="/docs/install_windows.md">Windows Installation</a>
 
 ## Features
 
@@ -19,14 +32,8 @@ Please refer to one of the following manuals:
  - (Mobile) Browser support
  - Crash / Soft-lock detection
  - Data feeding to 112Centraal
+ - Custom feeding URL's
 
 ## Planned Features
 
- - Adding custom URL's for feeding
- - Capcode lookup
-
-## Prerequisites
-
- - A device / server to run on with at least 1 free USB port (Windows / Linux)
- - Some form of compatible RTL-SDR dongle
- - Basic terminal and config editing skills
+ - Capcode resolving

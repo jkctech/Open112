@@ -33,7 +33,6 @@ def RequestHandlerFactory(webroot, msglist):
 				# If path is in webroot, display it!
 				if path in files:
 					self.send_response(200)
-					# self.send_header("Content-type", "text/html")
 					self.end_headers()
 
 					with open(path, "rb") as f:
@@ -59,7 +58,7 @@ def RequestHandlerFactory(webroot, msglist):
 			result = []
 			for root, subdirs, files in os.walk(webroot):
 				for filename in files:
-					file_path = os.path.join(root, filename)
+					file_path = os.path.join(root, filename).replace('\\', '/')
 					result.append(file_path)
 			return result
 

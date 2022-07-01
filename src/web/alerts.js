@@ -5,7 +5,7 @@ var size = 0; // Size of page
 function updateMessages(first = false)
 {
 	let xhr = new XMLHttpRequest();
-	let url = location.protocol + "//" + location.host + "/messages";
+	let url = "/messages";
 	xhr.open("GET", url, true);
 
 	// When request completes and is OK, process data

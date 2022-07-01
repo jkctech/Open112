@@ -52,7 +52,7 @@ blacklist rtl2830
 
 Multimon is the decoder software that makes the raw signals from the SDR into text.
 
-**WARNING:** Multimon-NG 1.1.8 has **known issues** with the FLEX protocol (<a href="/etc/modprobe.d/blacklist.conf" target="_blank">Read More</a>)
+**WARNING:** Multimon-NG 1.1.8 has **known issues** with the FLEX protocol (<a href="/etc/modprobe.d/blacklist.conf" target="_blank">Read More</a>).
 Therefore we will **specifically** install the release of Multimon-NG 1.1.9 which is the only confirmed working version. (For now)
 
 ```bash
@@ -76,7 +76,7 @@ rtl_test
 
 Your output should look something like this:
 
-```bash
+```
 Found 1 device(s):
   0:  Generic, RTL2832U, SN: 77771111153705700
 
@@ -108,4 +108,5 @@ If you ever need to access the virtual environment, run `source venv/bin/activat
 ### Done!
 
 Everything should be ready to go!
+
 Please refer to the <a href="/docs/config.md">Configuration</a> manual to learn how to configure your **Open112** client!

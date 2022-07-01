@@ -42,7 +42,9 @@ In the case feeding is enabled and no API key is provided, feeding to **112Centr
 
 ###### apikey
 
-API key for **112Centraal** specifically. To support this project, you can apply to become a feeder and receive some extra benefits of **Open112**. Please refer to the <a href="/docs/feeding.md">Feeding</a> manual to learn more about feeding **112Centraal** or feeding to custom servers.
+API key for **112Centraal** specifically. To support this project, you can apply to become a feeder and receive some extra benefits of **Open112**.
+
+Please refer to the <a href="/docs/feeding.md">Feeding</a> manual to learn more about feeding **112Centraal** or feeding to custom servers.
 
 ###### endpoints
 
@@ -102,7 +104,9 @@ Please try to avoid running on 1.1.8 where you can!
 
 Open112 has an included mini "webserver" that can be displayed on a screen and shows live incoming data from your receiver.
 
-**WARNING:** The used Python module for the webserver is not meant for production use and should **NOT** be open to the public. Use at your own risk!
+**WARNING:** The used Python module for the webserver is not meant for production use and should **NOT** be open to the public.
+
+**Use at your own risk!**
 
 ###### enabled
 

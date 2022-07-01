@@ -2,9 +2,9 @@
 
 Open112 is open source <a href="https://nl.wikipedia.org/wiki/P2000_(netwerk)" target="_blank">P2000</a> receiver software, intended to receive pager notificiations from the Dutch Emergency Services.
 
-This software doubles as feeder software for <a href="https://112centraal.nl" target="_blank">112Centraal</a>.
+This software also doubles as feeder software for <a href="https://112centraal.nl" target="_blank">112Centraal</a>.
 
-<img src="assets/screenshots/browser.png" width="50%"> <img src="assets/screenshots/mobile.png" width="19%"> <img src="assets/screenshots/terminal.png" width="30%">
+<img src="assets/screenshots/browser.png" width="44%"> <img src="assets/screenshots/mobile.png" width="17%"> <img src="assets/screenshots/terminal.png" width="31%">
 
 ## Prerequisites
 

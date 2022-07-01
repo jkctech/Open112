@@ -11,7 +11,7 @@
 		"multimon-version": "1.1.9"
 	},
 	"webserver": {
-		"enabled": true,
+		"enabled": false,
 		"hostname": "",
 		"port": 8112,
 		"messages": 250

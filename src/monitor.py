@@ -88,7 +88,7 @@ def radioloop():
 								messages.pop(0)
 
 						# Push to queue
-						if settings['feeding'] == True and missgroup == False:
+						if settings['feeder']['enabled'] == True and missgroup == False:
 							try:
 								queue.put(
 									{
@@ -147,11 +147,12 @@ def queuechecker():
 	global queue, settings, __version__
 
 	# Start queue & feeder
-	if settings['feeding'] == True:
+	if settings['feeder']['enabled'] == True:
 		queue = Queue.Queue(maxsize=512)
-		feeder = Feeder(__version__)
+		feeder = Feeder(__version__, settings['feeder']['apikey'], settings['feeder']['endpoints'])
 	else:
-		return
+		while True:
+			time.sleep(3600)
 
 	# Waiting time variable and max time to prevent eternal waits...
 	wtime = 0.2

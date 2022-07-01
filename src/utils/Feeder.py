@@ -1,59 +1,49 @@
-import json
 import requests
 import time
 
-from utils.Sysinfo import Sysinfo
-from os import path
-from colored import fg
-
 class Feeder:
-	ENDPOINT = "http://localhost/api/v2/"
+	endpoints = [
+		"https://api.112centraal.nl/post/insert/"
+	]
 
-	def __init__(self, version):
-		sys = Sysinfo()
-
-		self.uuid = sys.getUUID()
+	def __init__(self, version, apikey, endpoints=[]):
 		self.version = version
-
-		self.__infofile()
+		self.endpoints += endpoints
+		self.apikey = apikey
 
 	def feed(self, msgobject):
 		data = {
-			"message": msgobject,
-			"uuid": self.uuid,
-			"sent": time.time(),
+			"message": msgobject['message'],
+			"capcodes": ",".join(msgobject['capcodes']),
+			"timestamp": int(msgobject['timestamp']),
+			"sent": int(time.time()),
 			"version": self.version
 		}
 
 		headers = {
-			'Content-type': 'application/json'
+			'Content-type': 'application/x-www-form-urlencoded'
 		}
 
-		try:
-			r = requests.post(
-				self.ENDPOINT + "insert",
-				data=json.dumps(data),
-				headers=headers,
-				timeout=10
-			)
+		for i in range(0, len(self.endpoints)):
+			# If feeding 112centraal and no apikey present, skip
+			if i == 0 and len(self.apikey) == 0:
+				continue
 
-			return r
+			# Add apikey if 112centraal
+			endpoint = self.endpoints[i]
+			if i == 0:
+				data['apikey'] = self.apikey
 
-		except Exception:
-			return False
-
-	def __infotext(self):
-		text = ""
-		text += "UUID: " + self.uuid + "\n"
-		text += "Statistics URL: " + self.ENDPOINT + "stats/" + self.uuid + "\n"
-		return text
-
-	def __infofile(self):
-		fp = "../feeder_info.txt"
-		if path.exists(fp) == False:
+			# Silently fail
 			try:
-				with open(fp, "w") as f:
-					f.write(self.__infotext())
-			except Exception as e:
-				print(fg('yellow') + "WARNING: " + fg('white') + "Could not create {}!".format(fp))
-				print(e)
+				requests.post(
+					endpoint,
+					data=data,
+					headers=headers,
+					timeout=(2, 10)
+				)
+			except Exception:
+				pass
+			
+			if i == 0:
+				del data['apikey']

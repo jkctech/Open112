@@ -1,9 +1,13 @@
 {
-	"feeding": true,
+	"feeder": {
+		"enabled": false,
+		"apikey": "",
+		"endpoints": []
+	},
 	"radio": {
 		"device_id": 0,
 		"gain": "automatic",
-		"timeout": 400,
+		"timeout": 315,
 		"multimon-version": "1.1.9"
 	},
 	"webserver": {

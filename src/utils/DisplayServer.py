@@ -12,39 +12,43 @@ def RequestHandlerFactory(webroot, msglist):
 		}
 
 		def do_GET(self):
-			files = self.getfiles()
+			try:
+				files = self.getfiles()
 
-			# Unify directory delimiters
-			path = self.path.replace('/', '\\').split('?')[0]
+				# Unify directory delimiters
+				path = self.path.replace('/', '\\').split('?')[0]
 
-			# Special cases
-			if path == "\\messages":
-				self.messages()
-				return
+				# Special cases
+				if path == "\\messages":
+					self.messages()
+					return
 
-			# Rewrites
-			if path in self.rewrites.keys():
-				path = self.rewrites[path]
+				# Rewrites
+				if path in self.rewrites.keys():
+					path = self.rewrites[path]
 
-			# Prepend webroot so relative path makes sense
-			path = webroot + path
+				# Prepend webroot so relative path makes sense
+				path = webroot + path
 
-			# If path is in webroot, display it!
-			if path in files:
-				self.send_response(200)
-				# self.send_header("Content-type", "text/html")
-				self.end_headers()
+				# If path is in webroot, display it!
+				if path in files:
+					self.send_response(200)
+					# self.send_header("Content-type", "text/html")
+					self.end_headers()
 
-				with open(path, "rb") as f:
-					self.wfile.write(f.read())
+					with open(path, "rb") as f:
+						self.wfile.write(f.read())
 
-			# 404
-			else:
-				self.send_response(404)
-				self.end_headers()
-				
-				with open(webroot + "\\404.html", "rb") as f:
-					self.wfile.write(f.read())
+				# 404
+				else:
+					self.send_response(404)
+					self.end_headers()
+					
+					with open(webroot + "\\404.html", "rb") as f:
+						self.wfile.write(f.read())
+			
+			except ConnectionAbortedError:
+				pass
 
 		# Disable logging to the stdout
 		def log_message(self, format, *args):

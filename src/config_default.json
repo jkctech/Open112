@@ -12,7 +12,7 @@
 	},
 	"webserver": {
 		"enabled": true,
-		"hostname": "localhost",
+		"hostname": "",
 		"port": 8112,
 		"messages": 250
 	}

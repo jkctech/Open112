@@ -49,7 +49,7 @@ def radioloop():
 					continue
 
 				# Non-flex usually means error
-				if line.startswith("FLEX") == False:
+				if line.startswith("FLEX") == False and line.startswith("Signal") == False:
 					raise Exception(line)
 
 				# If there's something to read...

@@ -50,7 +50,7 @@ def radioloop():
 
 				# Non-flex usually means error
 				if line.startswith("FLEX") == False and line.startswith("Signal") == False:
-					raise Exception(line)
+					print(fg('red') + "Possible error:", fg('white') + line)
 
 				# If there's something to read...
 				if len(line) > 0:
